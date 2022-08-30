@@ -1,0 +1,72 @@
+{
+    "01": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "02": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "03": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "04": {
+        "Name": "John White",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "05": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "06": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "07": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "08": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "E09": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    },
+    "E10": {
+        "Name": "John Black",
+        "Salary per Month": 5000,
+        "Entry Date": "2010-10-10",
+        "Bonus": 450,
+        "Position": "Pirate"
+    }
+}

@@ -1,0 +1,10 @@
+
+----Start Menu--------------------------------
+    [1] Managing Employee Data Menu
+    [2] Load Employees Database
+    [3] Print Paycheck Sum With Bonus
+    [4] Print Paycheck Sum Without Bonus
+    [5] Print All Employees Names
+    [6] Print All Employees Names and Role
+----------------------------------------------
+    [0] Exit / End Program

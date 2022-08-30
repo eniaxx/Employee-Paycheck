@@ -1,0 +1,10 @@
+
+----Managing Data / Employee Menu-------------
+    [1] Load Employees Data                 
+    [2] Save Employees Data                 
+    [3] Create Employee Data                
+    [4] Create Employee Data "Dummy"        
+    [5] Choose Employee to Edit             
+    [6] Choose Specific Employees        
+----------------------------------------------
+    [0] Exit / Go Back
