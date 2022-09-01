@@ -1,12 +1,36 @@
-import os, json, pandas, menu
+import os, sys, json, pandas, menu
 
-class Database:
+class Database(object):
 
-    def list_Database():
-    
-        dir = './Database'
+    def __init__(self, work_dir):
+        
+        self.work_dir = work_dir
 
-        print(pandas.DataFrame(data = os.listdir(dir)))
+
+    def load(self):
+
+        fileList = [name for name in self.work_dir if name.endswith('.json')]
+
+        for count, fileName in enumerate(fileList, 1):
+            sys.stdout.write("[%d] %s\n\r" % (count, fileName))
+
+        choice = int(input("Select txt file[1-%s]: " % count)) - 1
+        
+        print(fileList[choice])
+
+        with open(fileList[choice], 'r') as file:
+
+            Operation.store(str(fileList[choice]), file)
+
+        Operation.store
+
+        print(fileList[choice])
+        
+
+
+    def list_Database(self):
+
+        print(pandas.DataFrame(data = os.listdir(self.work_dir)))
 
     def database_name():
 
@@ -102,19 +126,14 @@ class Operation:
 
         if (Operation.quantity() == 1):
 
-            temp_dictionary = Operation.l_d[0]
-
-            return sum(item[choice] for item in temp_dictionary)
+            return sum(item[choice] for item in Operation.l_d[0])
 
         elif (Operation.quantity() >= 2):
 
-            pass
+            for i in Operation.l_d:
+
+                return sum(item[choice] for item in Operation.l_d[i])
 
         else:
 
             pass
-
-
-    def bonus_sum():
-
-        pass

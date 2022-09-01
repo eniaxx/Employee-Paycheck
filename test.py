@@ -84,11 +84,29 @@
 #print(data[0])
 
 
-data = {
-    'Student 1': {'Name': 'Bobby', 'Id': 1, "Age": 20},
-    'Student 2': {'Name': 'ojaswi', 'Id': 2, "Age": 22},
-    'Student 3': {'Name': 'rohith', 'Id': 3, "Age": 20},
-}
+# class Circle(object):
+
+#     pi = 3.14159
+
+#     def __init__(self, radius):
+
+#         self.radius = radius
+
+#     def area(self):
+        
+#         return Circle.pi * self.radius * self.radius
+
+# print(str(Circle.pi) + '\n')
+
+# #print(str(Circle.__init__(4)) + '\n')
+
+# print(str(Circle(100).area()) + '\n')
+
+# data = {
+#     'Student 1': {'Name': 'Bobby', 'Id': 1, "Age": 20},
+#     'Student 2': {'Name': 'ojaswi', 'Id': 2, "Age": 22},
+#     'Student 3': {'Name': 'rohith', 'Id': 3, "Age": 20},
+# }
  
  
 # iterate all the nested dictionaries with keys
@@ -98,3 +116,22 @@ data = {
     
     
     #print(data[i].values())
+
+
+
+import os
+import sys
+
+items = os.listdir("./Menu")
+
+fileList = [name for name in items if name.endswith(".txt")]
+
+for cnt, fileName in enumerate(fileList, 1):
+    sys.stdout.write("[%d] %s\n\r" % (cnt, fileName))
+
+choice = int(input("Select txt file[1-%s]: " % cnt)) - 1
+print(fileList[choice])
+
+print(str(fileList[choice]))
+
+print('hurrraaa')

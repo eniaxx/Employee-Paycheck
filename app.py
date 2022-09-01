@@ -1,13 +1,19 @@
-import menu
+import menu, commands
 
-class __main__:
+class App(object):
 
-    def __init__():
+    def __init__(self, start_choice, work_dir):
 
-        welcome = open('./Menu/welcome.txt')
+        self.start_choice = start_choice
 
-        print(welcome.read())
+        self.work_dir = work_dir
 
-        menu.Start_Menu.__init__()
+    def start(self):
 
-__main__.__init__()
+        print(open('./Menu/welcome.txt').read())
+
+        commands.Database(self.work_dir).initial
+
+        menu.Menu(self.start_choice).command_selection()
+
+App('Start').start()

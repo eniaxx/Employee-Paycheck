@@ -1,162 +1,137 @@
-import data_operations as do
+from unittest import skip
+import commands as do
 
-class Print_Menu():
+#Menu Class with __init__, __err__, which_case, print_menu, case_0 to case_6
+class Menu(object):
 
-	def menu(choice):
+	list_of_strings = []
+	dir = './Menu/'
 
-		match choice:
+	def __init__(self, menu_choice):
+
+		self.menu_choice = menu_choice
+
+	def command_selection(self):
+		
+		match self.menu_choice:
 			
 			case 'Start':
 				
-				print(open('./Menu/start_menu.txt').read())
+				print(open((self.dir + 'start_menu.txt')).read())
 			
 			case 'Employee':
 
-				print(open('./Menu/employee_menu.txt').read())
+				print(open((self.dir + 'employee_menu.txt')).read())
 
-#Start Menu Class with __init__, __err__, which_case, case_0 to case_6
-class Start_Menu:
-	
-	#Initialazing the Start Menu class
-	def __init__():
-	
-		do.Operation.menu_case = 'Start'
-		
-		Print_Menu.menu(do.Operation.menu_case)
-
-		Start_Menu.which_case(Case.choice())
-	
-	#Function for handling int input error (no case available), default action
-	def __error__():
-
-		print('\n Incorrect choice.')
-
-		return Start_Menu.which_case(Case.choice())
-	
-	#This function switch between cases
-	def which_case(argument):
-
-		case = 'case_' + str(argument)
-
-		print('\n' + case)
-		
-		default = Start_Menu.__error__
-
-		return getattr(Start_Menu, case, default)()
-
-	#Defined case functions and their behavior
-	def case_0():
-
-		print('\n See you soon.')
-
-		exit()
-
-	def case_1():
-		
-		Employee_Menu.__init__()
-		
-	def case_2():
-		
-		file_name = do.Database.database_name()
-
-		file_data = do.Database.read(file_name)
-
-		do.Operation.store(file_name, file_data)
-
-		Start_Menu.__init__()
-
-	def case_3():
-
-		do.Operation.empty_database_check()
-
-		do.Operation.paycheck_sum()
-
-	def case_4():
-
-		do.Operation.empty_database_check()
-		
-		exit()
-	
-	def case_5():
-
-		do.Operation.empty_database_check()
-		
-		exit()
-	
-	def case_6():
-
-		do.Operation.empty_database_check()
-		
-		exit()
-
-#Employee Menu Class with __init__, __err__, which_case, case_0 to case_6
-class Employee_Menu:
-
-	#Initialazing the Employee Menu class
-	def __init__():
-
-		do.Operation.menu_case = 'Employee'
-	
-		Print_Menu.menu(do.Operation.menu_case)
-
-		Employee_Menu.which_case(Case.choice())
-
-	#Function for handling int input error (no case available), default action
-	def __error__():
-
-		print('\n Incorrect choice.')
-
-		return Employee_Menu.which_case(Case.choice())
-
-	#This function switch between cases
-	def which_case(argument):
-
-		case = 'case_' + str(argument)
-
-		print('\n' + case)
-		
-		default = Employee_Menu.__error__
-
-		return getattr(Employee_Menu, case, default)()
-
-	#Defined case functions and their behavior
-	def case_0():
-
-		Start_Menu.__init__()
-
-	def case_1():
-		
-		exit()
-
-	def case_2():
-		
-		exit()
-
-	def case_3():
-		
-		exit()
-
-	def case_4():
-		
-		exit()
-	
-	def case_5():
-		
-		exit()
-	
-	def case_6():
-		
-		exit()
-
-#Class for taking valid int input
-class Case:
-
-	def choice():
 		#infinite loop with exception for anything else than int and break
 		while True:
 			try:
-				argument = int(input('\n Type a number' + '\n'))
+				argument = 'case_' + str(int(input('\n Type a number. \n')))
 				break
+			
 			except ValueError:
 				print('\n Invalid. Use valid number.')
-		return argument
+
+		print(argument)
+
+		getattr(self, argument, lambda: (print('\n Incorrect choice. Choose again.'), self.command_selection()))()
+
+	#Defined case functions and their behavior
+	def case_0(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				print('\n See you soon.')
+
+				exit()
+
+			case 'Employee':
+
+				self.command_selection('Start')
+				#self('Start').command_selection()
+
+	def case_1(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				Menu('Employee').command_selection()
+
+			case 'Employee':
+
+				pass
+		
+	def case_2(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				file_name = do.Database.database_name()
+
+				file_data = do.Database.read(file_name)
+
+				do.Operation.store(file_name, file_data)
+
+				Menu(self).command_selection()
+
+			case 'Employee':
+
+				Menu('Start').command_selection()
+
+	def case_3(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				do.Operation.empty_database_check()
+
+				do.Operation.sum('Salary')
+
+				do.Operation.sum('Bonus')
+
+			case 'Employee':
+
+				pass
+
+	def case_4(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				print('\n See you soon.')
+
+				exit()
+
+			case 'Employee':
+
+				Menu('Start').command_selection()
+	
+	def case_5(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				pass
+
+			case 'Employee':
+
+				pass
+	
+	def case_6(self):
+
+		match self.menu_choice:
+			
+			case 'Start':
+
+				pass
+
+			case 'Employee':
+
+				pass
