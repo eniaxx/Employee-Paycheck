@@ -1,135 +1,136 @@
 import commands as do
 
-#Menu Class with __init__, __err__, which_case, print_menu, case_0 to case_6
+
+# Menu Class with __init__, __err__, which_case, print_menu, case_0 to case_6
+
 class Menu:
+    dir = './Menu/'
 
-	dir = './Menu/'
+    def __init__(self, menu_choice):
 
-	def __init__(self, menu_choice):
+        self.menu_choice = menu_choice
 
-		self.menu_choice = menu_choice
+    def command_selection(self):
 
-	def command_selection(self):
-		
-		match self.menu_choice:
-			
-			case 'Start':
-				
-				print(open((self.dir + 'start_menu.txt')).read())
-			
-			case 'Employee':
+        match self.menu_choice:
 
-				print(open((self.dir + 'employee_menu.txt')).read())
+            case 'Start':
 
-		#infinite loop with exception for anything else than int and break
-		while True:
-			try:
-				argument = 'case_' + str(int(input('\n Type a number. \n')))
-				break
-			
-			except ValueError:
-				print('\n Invalid. Use valid number.')
+                print(open((self.dir + 'start_menu.txt')).read())
 
-		print(argument)
+            case 'Employee':
 
-		getattr(self, argument, lambda: (print('\n Incorrect choice. Choose again.'), self.command_selection()))()
+                print(open((self.dir + 'employee_menu.txt')).read())
 
-	#Defined case functions and their behavior
-	def case_0(self):
+        # infinite loop with exception for anything else than int and break
+        while True:
+            try:
+                argument = 'case_' + str(int(input('\n Type a number. \n')))
+                break
 
-		match self.menu_choice:
-			
-			case 'Start':
+            except ValueError:
+                print('\n Invalid. Use valid number.')
 
-				print('\n See you soon.')
+        print(argument)
 
-				exit()
+        getattr(self, argument, lambda: (print('\n Incorrect choice. Choose again.'), self.command_selection()))()
 
-			case 'Employee':
+    # Defined case functions and their behavior
+    def case_0(self):
 
-				self.command_selection('Start')
-				#self('Start').command_selection()
+        match self.menu_choice:
 
-	def case_1(self):
+            case 'Start':
 
-		match self.menu_choice:
-			
-			case 'Start':
+                print('\n See you soon.')
 
-				Menu('Employee').command_selection()
+                exit()
 
-			case 'Employee':
+            case 'Employee':
 
-				pass
-		
-	def case_2(self):
+                self.command_selection('Start')
+            # self('Start').command_selection()
 
-		match self.menu_choice:
-			
-			case 'Start':
+    def case_1(self):
 
-				file_name = do.Database.database_name()
+        match self.menu_choice:
 
-				file_data = do.Database.read(file_name)
+            case 'Start':
 
-				do.Operation.store(file_name, file_data)
+                Menu('Employee').command_selection()
 
-				Menu(self).command_selection()
+            case 'Employee':
 
-			case 'Employee':
+                pass
 
-				Menu('Start').command_selection()
+    def case_2(self):
 
-	def case_3(self):
+        match self.menu_choice:
 
-		match self.menu_choice:
-			
-			case 'Start':
+            case 'Start':
 
-				do.Operation.empty_database_check()
+                file_name = do.Database.database_name()
 
-				do.Operation.sum('Salary')
+                file_data = do.Database.read(file_name)
 
-				do.Operation.sum('Bonus')
+                do.Operation.store(file_name, file_data)
 
-			case 'Employee':
+                Menu(self).command_selection()
 
-				pass
+            case 'Employee':
 
-	def case_4(self):
+                Menu('Start').command_selection()
 
-		match self.menu_choice:
-			
-			case 'Start':
+    def case_3(self):
 
-				print('\n See you soon.')
+        match self.menu_choice:
 
-				exit()
+            case 'Start':
 
-			case 'Employee':
+                do.Operation.empty_database_check()
 
-				Menu('Start').command_selection()
-	
-	def case_5(self):
+                do.Operation.sum('Salary')
 
-		match self.menu_choice:
-			
-			case 'Start':
+                do.Operation.sum('Bonus')
 
-				pass
+            case 'Employee':
 
-			case 'Employee':
+                pass
 
-				pass
-	
-	def case_6(self):
+    def case_4(self):
 
-		match self.menu_choice:
-			
-			case 'Start':
+        match self.menu_choice:
 
-				pass
+            case 'Start':
 
-			case 'Employee':
+                print('\n See you soon.')
 
-				pass
+                exit()
+
+            case 'Employee':
+
+                Menu('Start').command_selection()
+
+    def case_5(self):
+
+        match self.menu_choice:
+
+            case 'Start':
+
+                pass
+
+            case 'Employee':
+
+                pass
+
+    def case_6(self):
+
+        match self.menu_choice:
+
+            case 'Start':
+
+                pass
+
+            case 'Employee':
+
+                pass

@@ -54,9 +54,9 @@ class Start_Menu:
 
 		do.Operation.empty_database_check()
 
-		do.Operation.sum('Salary')
+		sum('Salary')
 
-		do.Operation.sum('Bonus')
+		sum('Bonus')
 
 	def case_4():
 
