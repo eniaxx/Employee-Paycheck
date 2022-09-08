@@ -1,6 +1,7 @@
-import os, sys, json, pandas, menu
+import os, sys, json, pandas, time
+import menu
 
-class Database(object):
+class Database:
 
     def __init__(self, work_dir):
         
@@ -137,3 +138,12 @@ class Operation:
         else:
 
             pass
+
+ 
+@staticmethod
+def slowprint(printing_text):
+
+    for c in printing_text + '\n':
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(1./50)

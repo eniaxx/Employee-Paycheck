@@ -1,10 +1,8 @@
-from unittest import skip
 import commands as do
 
 #Menu Class with __init__, __err__, which_case, print_menu, case_0 to case_6
-class Menu(object):
+class Menu:
 
-	list_of_strings = []
 	dir = './Menu/'
 
 	def __init__(self, menu_choice):

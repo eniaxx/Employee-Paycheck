@@ -1,6 +1,6 @@
 import menu, commands
 
-class App(object):
+class App:
 
     def __init__(self, start_choice, work_dir):
 

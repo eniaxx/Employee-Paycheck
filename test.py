@@ -119,19 +119,40 @@
 
 
 
-import os
+# import os
+# import sys
+
+# items = os.listdir("./Menu")
+
+# fileList = [name for name in items if name.endswith(".txt")]
+
+# for cnt, fileName in enumerate(fileList, 1):
+#     sys.stdout.write("[%d] %s\n\r" % (cnt, fileName))
+
+# choice = int(input("Select txt file[1-%s]: " % cnt)) - 1
+# print(fileList[choice])
+
+# print(str(fileList[choice]))
+
+# print('hurrraaa')
+
+
+from time import sleep
+
+def print_slow(txt):
+    for x in txt:                     # cycle through the text one character at a time
+        print(x, end='', flush=True)  # print one character, no new line, flush buffer
+        sleep(0.04)
+    print() # go to new line
+
+print_slow("Hello. I'm feeling a bit slow today")
+
+
 import sys
-
-items = os.listdir("./Menu")
-
-fileList = [name for name in items if name.endswith(".txt")]
-
-for cnt, fileName in enumerate(fileList, 1):
-    sys.stdout.write("[%d] %s\n\r" % (cnt, fileName))
-
-choice = int(input("Select txt file[1-%s]: " % cnt)) - 1
-print(fileList[choice])
-
-print(str(fileList[choice]))
-
-print('hurrraaa')
+import time
+def slowprint(s):
+	for c in s + '\n':
+		sys.stdout.write(c)
+		sys.stdout.flush()
+		time.sleep(1./10)
+slowprint("this this writen slowly in my terminal")
