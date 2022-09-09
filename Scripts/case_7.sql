@@ -1,0 +1,1 @@
+select round(sum(Bonus) + sum(AnnualSalary),2) from staff;

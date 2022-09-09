@@ -137,22 +137,31 @@
 # print('hurrraaa')
 
 
-from time import sleep
+# from time import sleep
 
-def print_slow(txt):
-    for x in txt:                     # cycle through the text one character at a time
-        print(x, end='', flush=True)  # print one character, no new line, flush buffer
-        sleep(0.04)
-    print() # go to new line
+# def print_slow(txt):
+#     for x in txt:                     # cycle through the text one character at a time
+#         print(x, end='', flush=True)  # print one character, no new line, flush buffer
+#         sleep(0.04)
+#     print() # go to new line
 
-print_slow("Hello. I'm feeling a bit slow today")
+# print_slow("Hello. I'm feeling a bit slow today")
 
 
-import sys
-import time
-def slowprint(s):
-	for c in s + '\n':
-		sys.stdout.write(c)
-		sys.stdout.flush()
-		time.sleep(1./10)
-slowprint("this this writen slowly in my terminal")
+# import sys
+# import time
+# def slowprint(s):
+# 	for c in s + '\n':
+# 		sys.stdout.write(c)
+# 		sys.stdout.flush()
+# 		time.sleep(1./10)
+# slowprint("this this writen slowly in my terminal")
+
+import sqlite3
+
+con = sqlite3.connect('./Database/EmployeeData.db')
+result = con.cursor(). \
+            execute('select round(sum(Salary),2) from Staff;').fetchone()[0]
+
+print(result)
+con.close()

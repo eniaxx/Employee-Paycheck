@@ -1,0 +1,1 @@
+select firstName, lastName, title, bonus, annualsalary from staff;

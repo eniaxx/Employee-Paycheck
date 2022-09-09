@@ -1,0 +1,1 @@
+select round(sum(AnnualSalary),2) from Staff;

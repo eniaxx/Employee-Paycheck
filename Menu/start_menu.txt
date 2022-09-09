@@ -1,10 +1,18 @@
 
-----Start Menu--------------------------------
-    [1] Managing Employee Data Menu
-    [2] Load Employees Database
-    [3] Print Paycheck Sum With Bonus
-    [4] Print Paycheck Sum Without Bonus
-    [5] Print All Employees Names
-    [6] Print All Employees Names and Role
-----------------------------------------------
+--------Menu-------------------------------------------------------
+     [1] Print All Entries In The Database
+     [2] Print All Employees With Annual Salary
+     [3] Print All Employees With Annual Salary And Bonus
+     [4] Print All Employees Total Monthly Salary
+     [5] Print All Employees Total Annual Salary
+     [6] Print All Employees Total Bonus
+     [7] Print All Employees Total Annual Salary And Bonus
+     [8] Print All Employees Names
+     [9] Print All Employees Names And Role
+    [10] Export All Employee                 
+    [11] Export All Employee Before or After Specific Hire Date
+    [12] Create Employee                
+    [13] Create Employee With Random Data        
+    [14] Modify Employee Data
+-------------------------------------------------------------------
     [0] Exit / End Program
