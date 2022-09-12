@@ -1,97 +1,149 @@
-import sqlite3, sys, time, pandas as pd
+from email.policy import default
+import sqlite3, sys, os, time, getpass, pandas as pd
 from tabulate import tabulate
 
-def slowprint(printing_text, speed = 50):
-    for c in printing_text + '\n':
-        sys.stdout.write(c)
-        sys.stdout.flush()
-        time.sleep(1./speed)
+class MenuApp(object):
 
-def sqlString(script):
+    def __init__(self):
+        pass
 
-        try:
-            c = open('./Scripts/' + script, 'r')
-            _script = c.read()
-        except ValueError:
-            slowprint("\n Can't find script.")
-        finally:
-            c.close()
-        return _script
-
-class MenuApp:
-
-    def selection():   
-        print(open(('./Menu/start_menu.txt')).read())
+    @staticmethod
+    def slowprint(printing_text, speed = 50):
+        for c in printing_text + '\n':
+            sys.stdout.write(c)
+            sys.stdout.flush()
+            time.sleep(1./speed)
+    
+    def selection(self):
 
         while True:
             try:
-                slowprint('\n Type a number. \n')
-                number = int(input())
+                print('\n Type a number to slect option \
+                    \n Choose m for printing the menu \
+                    \n Choose c for cleaning the console output.')
+                key = getpass.getpass('')
+
+                if key == 'm' or key.upper() == 'M':
+                    print(open(('./Menu/start_menu.txt')).read())
+                    continue
+
+                elif key == 'c' or key.upper() == 'C':
+                    os.system('cls')
+                    continue
+
+                key = int(key)
                 break
+            
             except ValueError:
-                slowprint('\n Invalid. Use valid number.')
+                self.slowprint('\n Invalid. Use valid number.')
 
-        _selection = 'case_' + str(number)
-        getattr(MenuApp, _selection, lambda: \
-            (slowprint('\n Incorrect choice. Choose again.'), MenuApp.selection()))()
+        
+            choice = 'case_' + str(key)
+            default = lambda error: self.slowprint(error) #self.selection(self))
+            getattr(self, choice, default('\n Incorrect choice. Choose again.'))(self)
 
-    def wolfCool(_columns, sqlel):
+            continue
+
+        # choice = 'case_' + str(key)
+        # getattr(self, choice, lambda: (self.slowprint('\n Incorrect choice. Choose again.'), self.selection))()
+
+    @staticmethod
+    def coolTable(script):
+
         with pd.option_context('display.max_columns', None, 'display.max_rows', None):
-                df = pd.DataFrame(SqlStatements(sqlString(sqlel)).execute(), \
-                columns=_columns)
-                df.index = df.index + 1
-                print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
+            query = sqlite3.connect('./Database/EmployeeData.db').execute(open('./Scripts/' + script).read())
+            cols = [column[0] for column in query.description]
+            df = pd.DataFrame(data= query.fetchall(), columns= cols)
+            df.index = df.index + 1
+            print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
 
-    def case_0():
-        slowprint('Goodbye.')
+        # with pd.option_context('display.max_columns', None, 'display.max_rows', None):
+        #         df = pd.DataFrame(sqldf(sqlel), \
+        #         sqldf(sqlel).columns)
+        #         df.index = df.index + 1
+        #         print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
+
+    def sumQuery(self, script, description):
+
+        try:
+            query = sqlite3.connect('./Database/EmployeeData.db').execute(open('./Scripts/' + script).read())
+            df = pd.DataFrame(data= query.fetchone())[0][0]
+            
+
+        except sqlite3.Error as error:
+            return 'Error occurred - ', error
+
+        finally:
+            self.slowprint(description + ' Sum is {}'.format(df))
+
+    def case_0(self):
+
+        self.slowprint('\n Goodbye. \n')
+        
         exit()
         
-    def case_1():
-        _columns = ['Employee ID', 'First Name', 'Last Name', 'Position', 'Birth Date', 'Hire Date'\
-                    , 'Salary', 'Bonus', 'Annual Salary', 'Annual Salary and Bonus']
+    def case_1(self):
             
-        MenuApp.wolfCool(_columns, 'select_all.sql')
+        self.coolTable('select_all.sql')
 
-    def case_2():
-        _columns = ['First Name', 'Last Name', 'Position', \
-                    'Annual Salary']
+        self.selection(self)
+
+    def case_2(self):
             
-        MenuApp.wolfCool(_columns, 'case_2.sql')
+        self.coolTable('case_2.sql')
+
+        self.selection(self)
         
-    def case_3():
-        _columns = ['First Name', 'Last Name', 'Position', \
-                    'Bonus', 'Annual Salary']
+    def case_3(self):
             
-        MenuApp.wolfCool(_columns, 'case_3.sql')
+        self.coolTable('case_3.sql')
 
-    def case_4():
-        slowprint(SqlStatements(sqlString('case_4.sql')).simpleQuery('Salary'))
+        self.selection(self)
 
-    def case_5():
-        slowprint(SqlStatements(sqlString('case_5.sql')).simpleQuery('Annual Salary'))
+    def case_4(self):
 
-    def case_6():
-        slowprint(SqlStatements(sqlString('case_6.sql')).simpleQuery('Bonus'))
+        self.sumQuery(self, 'case_4.sql', 'Monthly Salary')
 
-    def case_7():
-        slowprint(SqlStatements(sqlString('case_7.sql')).simpleQuery('Bonus and Annual Salary'))
+        self.selection(self)
 
-    def case_8():
-        _columns = ['First Name', 'Last Name']
+    def case_5(self):
+
+        self.sumQuery(self, 'case_5.sql', 'Annual Salary')
+
+        self.selection(self)
+
+    def case_6(self):
+
+        self.sumQuery(self, 'case_6.sql', 'Bonus')
+
+        self.selection(self)
+
+    def case_7(self):
+
+        self.sumQuery(self, 'case_7.sql', 'Bonus and Annual Salary')
+
+        self.selection(self)
+
+    def case_8(self):
             
-        MenuApp.wolfCool(_columns, 'case_8.sql')
+        self.coolTable('case_8.sql')
 
-    def case_9():
-        _columns = ['First Name', 'Last Name', 'Position']
+        self.selection(self)
+
+    def case_9(self):
             
-        MenuApp.wolfCool(_columns, 'case_9.sql')
+        self.coolTable('case_9.sql')
 
-    def case_10():
-        pass
-    def case_11():
-        pass
-    def case_12():
-        pass
+        self.selection(self)
+
+    def case_10(self):
+        self.selection(self)
+        
+    def case_11(self):
+        self.selection(self)
+        
+    def case_12(self):
+        self.selection(self)
 
 class SqlStatements:
 
@@ -105,29 +157,7 @@ class SqlStatements:
             cur = con.cursor()
             result = cur.execute(self.script).fetchall()        
         except sqlite3.Error as error:
-            slowprint('Error occured ' + str(error))
+            MenuApp.slowprint('Error occured ' + str(error))
         finally:
             con.close()
         return result
-
-    def simpleQuery(self, case):
-
-        try:
-            con = sqlite3.connect('./Database/EmployeeData.db')
-            cur = con.cursor()
-            result = cur.execute(self.script).fetchone()[0]
-        except sqlite3.Error as error:
-            return 'Error occurred - ', error
-        finally:
-            match case:
-                case 'Salary':
-                    return case + ' Sum is {}'.format(result)
-                
-                case 'Bonus':
-                    return case + ' Sum is {}'.format(result)
-
-                case 'Bonus and Annual Salary':
-                    return case + ' Sum is {}'.format(result)
-
-                case 'Annual Salary':
-                    return case + ' Sum is {}'.format(result)
