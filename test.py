@@ -157,11 +157,16 @@
 # 		time.sleep(1./10)
 # slowprint("this this writen slowly in my terminal")
 
-import sqlite3
+# import sqlite3
 
-con = sqlite3.connect('./Database/EmployeeData.db')
-result = con.cursor(). \
-            execute('select round(sum(Salary),2) from Staff;').fetchone()[0]
+# con = sqlite3.connect('./Database/EmployeeData.db')
+# result = con.cursor(). \
+#             execute('select round(sum(Salary),2) from Staff;').fetchone()[0]
 
-print(result)
-con.close()
+# print(result)
+# con.close()
+
+
+from app import MenuApp
+
+MenuApp.rightOption('test')
