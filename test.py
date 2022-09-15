@@ -165,8 +165,25 @@
 
 # print(result)
 # con.close()
+import sqlite3, pandas as pd
+
+query = sqlite3.connect('./Database/EmployeeData.db')\
+.execute('select MAX(EmployeeID) from Staff;')
+
+df = pd.DataFrame(data= query.fetchone())[0][0]
+
+sqlite3.connect('./Database/EmployeeData.db').close()
 
 
-from app import MenuApp
+print(df)
 
-MenuApp.rightOption('test')
+print(type(int(df)))
+
+names = ['David', 'Peter', 50, '2020-10-10', 'Bob']
+for i in range (len (names)):
+    print("{}".format(i + 1, names[i]))
+
+import namegenerator
+#First Do pip install namegenerator 
+#The Import it
+print (namegenerator.gen())
