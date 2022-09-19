@@ -183,7 +183,56 @@ names = ['David', 'Peter', 50, '2020-10-10', 'Bob']
 for i in range (len (names)):
     print("{}".format(i + 1, names[i]))
 
-import namegenerator
-#First Do pip install namegenerator 
-#The Import it
-print (namegenerator.gen())
+import names
+
+for i in range(10):
+    print(names.get_full_name())
+
+
+from random import randrange
+from datetime import timedelta
+
+def random_date(start, end):
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) # + delta.seconds
+    random_second = randrange(int_delta)
+    return start + timedelta(seconds=random_second)
+
+from datetime import datetime
+d1 = datetime.strptime('1/1/2000 1:30 PM', '%m/%d/%Y %I:%M %p')
+d2 = datetime.strptime('1/1/2009 4:50 AM', '%m/%d/%Y %I:%M %p')
+print(random_date(d1, d2).strftime('%Y-%m-%d'))
+
+from tabulate import tabulate
+
+with pd.option_context('display.max_columns', None, 'display.max_rows', None):
+    con = sqlite3.connect('./Database/EmployeeData.db')
+    query = '''select employeeid,
+                                        firstname,
+                                        lastname,
+                                        title,
+                                        birthdate,
+                                        hiredate,
+                                        salary,
+                                        bonus
+                                from Staff
+                                where EmployeeID = 150;'''
+    
+    #open('./Scripts/case_2.sql').read()
+    cols = [column[0] for column in con.execute(query).description]
+    df = pd.DataFrame(data= con.execute(query).fetchall(), columns= cols)
+    df.index = df.index + 1
+    print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
+
+    
+    print(con.execute(query).fetchone())
+
+    sqlite3.connect('./Database/EmployeeData.db').close()
+
+    for i in con.execute(query).description:
+        print(i[0])
+
+    dx = con.execute(query).fetchone()
+
+    for i in range(1, len(dx)):
+        print(dx[i])

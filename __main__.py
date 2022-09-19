@@ -1,11 +1,11 @@
 class Main:
 
     def start():
-        from app import MenuApp
+        from app import Application
 
         print(open('./Menu/welcome.txt').read() + '\n\n'\
             + open(('./Menu/start_menu.txt')).read())
         
-        MenuApp.selection()
+        Application.selection()
 
 Main.start()
