@@ -1,1 +1,0 @@
-select round(sum(Salary),2) from Staff;

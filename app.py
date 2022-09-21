@@ -1,10 +1,35 @@
 from msilib.schema import Error
-from random import randint, randrange
-from datetime import timedelta, datetime
 from tabulate import tabulate
-import sqlite3, sys, os, time, pandas as pd, names
+from datetime import datetime
+import sqlite3, sys, os, time, names, re, random, pandas as pd
 
 class Application:
+
+    def __init__(self, menu, script_dir):
+        
+        script = []
+        start = []
+        con = sqlite3.connect('./Database/EmployeeData.db')
+        description = ['Monthly Salary', 'Annual Salary', 'Bonus', 'Bonus and Annual Salary']
+
+        self.script = script
+        self.start = start
+        self.con = con
+        self.description = description
+
+        for file in os.scandir(script_dir):
+            if file.is_file():
+                sql_file = open(file, 'r')
+                sql_file_content = sql_file.read()
+                script.append(sql_file_content)
+                
+            sql_file.close()
+
+
+        with open(menu) as menu_file:
+            for line in menu_file:
+                start.append(line)
+            menu_file.close()
 
     @staticmethod
     def slowprint(printing_text, speed = 50):
@@ -13,127 +38,7 @@ class Application:
             sys.stdout.flush()
             time.sleep(1./speed)
     
-    @staticmethod
-    def selection():
-
-        M = Application
-
-        with open('./Menu/start_menu.txt') as menu_file:
-            lines = []
-            for line in menu_file:
-                lines.append(line)
-
-            menu_file.close()
-
-        while True:
-            try:
-                print("\n Choose an option.\
-                    \n Choose m for printing the menu.\
-                    \n Choose c for cleaning the console output.\n")
-                key = input('')
-
-                if key.lower() == 'm' or key.upper() == 'M':
-                    print(open(('./Menu/start_menu.txt')).read())
-
-                elif key.lower() == 'c' or key.upper() == 'C':
-                    os.system('cls')
-
-                elif int(key) in range(0, 15):
-
-                    if int(key) == 0:
-                        Application.rightOption(lines[17])
-                        M.slowprint('\n Goodbye. \n')
-                        exit()
-
-                    else:
-
-                        Application.rightOption(lines[int(key) + 1])
-
-                    match int(key):
-
-                        case 1:
-                            M.coolTable('select_all.sql')
-
-                        case 2:
-                            M.coolTable('case_2.sql')
-
-                        case 3:
-                            M.coolTable('case_3.sql')
-
-                        case 4:
-                            M.sumQuery('case_4.sql', 'Monthly Salary')
-
-                        case 5:
-                            M.sumQuery('case_5.sql', 'Annual Salary')
-
-                        case 6:
-                            M.sumQuery('case_6.sql', 'Bonus')
-
-                        case 7:
-                            M.sumQuery('case_7.sql', 'Bonus and Annual Salary')
-
-                        case 8:
-                            M.coolTable('case_8.sql')
-
-                        case 9:
-                            M.coolTable('case_9.sql')
-
-                        case 10:
-                            M.export('select_all.sql', x_script=None)
-
-                        case 11:
-                            M.export(script=None, x_script= M.sqlOperations('case 11'))
-
-                        case 12:
-                            M.sqlOperations('case 12')
-
-                        case 13:
-                            M.sqlOperations('case 13')
-
-                        case 14:
-                            pass
-
-                else:
-                    print('\n Invalid. Use valid option.')
-            
-            except ValueError:
-                print('\n Incorrect choice. Choose again.')
-                continue
-
-        
-            
-
-        # choice = 'case_' + str(key)
-        # getattr(self, choice, lambda: (self.slowprint('\n Incorrect choice. Choose again.'), self.selection))()
-
-    @staticmethod
-    def coolTable(script):
-
-        with pd.option_context('display.max_columns', None, 'display.max_rows', None):
-            query = sqlite3.connect('./Database/EmployeeData.db').execute(open('./Scripts/' + script).read())
-            cols = [column[0] for column in query.description]
-            df = pd.DataFrame(data= query.fetchall(), columns= cols)
-            df.index = df.index + 1
-            print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
-            sqlite3.connect('./Database/EmployeeData.db').close()
-
-    @staticmethod
-    def sumQuery(script, description):
-
-        try:
-            query = sqlite3.connect('./Database/EmployeeData.db').execute(open('./Scripts/' + script).read())
-            df = pd.DataFrame(data= query.fetchone())[0][0]
-            sqlite3.connect('./Database/EmployeeData.db').close()
-            
-
-        except sqlite3.Error as error:
-            return 'Error occurred - ', error
-
-        finally:
-            Application.slowprint(description + ' Sum is {}'.format(df))
-
-    @staticmethod
-    def rightOption(option):
+    def rightOption(self, option):
 
         while True:
             try:
@@ -144,102 +49,185 @@ class Application:
                     break
                 
                 elif key in ['N', 'n', 'No', 'no']:
-                    Application.selection()
+                    self.selection()
                     
                 else:
                     print('\n Invalid. Use valid option.')
 
             except ValueError:
                 print(Error)
-                Application.selection()
+                self.selection()
 
-    @staticmethod
-    def export(script, x_script):
+    def selection(self):
 
-        if x_script is None and script is True:
-            execute_script = open('./Scripts/' + script).read()
+        while True:
+            try:
+                print("\n Choose an option.\
+                    \n Choose m for printing the menu.\
+                    \n Choose c for cleaning the console output.\n")
+                key = input()
 
-        else:
-            execute_script = x_script
+                match key:
+
+                    case 'm' | 'M':
+                        for i in range(0, len(self.start)): print(self.start[i], end= '')
+
+                    case 'c' | 'C':
+                        os.system('cls')
+
+                    case '0':
+                        self.rightOption(self.start[-1])
+                        self.slowprint('\n Goodbye. \n')
+                        self.con.close()
+                        exit()
+
+                    case '1' | '2' | '3' | '8' | '9':
+                        self.coolTable(index= int(key))
+
+                    case '4' | '5' | '6' | '7':
+                        self.sumQuery(index= int(key), description= self.description[int(key) - 4])
+
+                    case '10':
+                        self.rightOption(self.start[int(key) + 1])
+                        self.export(key)
+
+                    case '11':
+                        self.rightOption(self.start[int(key) + 1])
+                        self.export(key)
+
+                    case '12' | '13' | '14' | '15':
+                        self.rightOption(self.start[int(key) + 1])
+                        self.sqlOperations(option= key)
+
+                    case _:
+                            print('\n Invalid. Use valid option.')
+            
+            except ValueError:
+                print('\n Incorrect choice. Choose again.')
+                continue
+    
+    def coolTable(self, index):
+
+        with pd.option_context('display.max_columns', None, 'display.max_rows', None):
+
+            query = self.con.execute(self.script[index - 1])
+            cols = [column[0] for column in query.description]
+
+            df = pd.DataFrame(data= query.fetchall(), columns= cols)
+            df.index = df.index + 1
+            print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
+            
+
+    def sumQuery(self, index, description):
+
+        try:
+            query = self.con.execute(self.script[index - 1])
+            df = pd.DataFrame(data= query.fetchone())[0][0]
+
+        except sqlite3.Error as error:
+            return 'Error occurred - ', error
+
+        finally:
+            self.slowprint(description + ' Sum is {}'.format(df))
+
+    def export(self, key):
+
+        match key:
+
+            case '10': script = self.script[0]
+
+            case '11':
+                    while True:
+                        try:
+                            year = input('\n Type Year (Format: 2022). \n')
+
+                            if re.match('^[0-9]{4}$', year):
+                                pass
+                            else:
+                                print('\n Invalid. Use valid option.')
+                                continue
+
+                            month = input('\n Type Month (Format: 01 - 12). \n')
+
+                            if 12 >= int(month) >= 1:
+                                pass
+                            else:
+                                print('\n Invalid. Use valid option.')
+                                continue
+
+                            day = input('\n Type Day (Format: 01 - 31). \n')
+
+                            if  12 >= int(day) >= 1:
+                                pass
+                            else:
+                                print('\n Invalid. Use valid option.')
+                                continue
+
+                            decision = input('\n Do you want to export before or after?\
+                            \n 0 - Abort\
+                            \n 1 - Before\
+                            \n 2 - After \n')
+
+                            match decision:
+                                case '1' | 'Before':
+                                    decision = '<='
+                                case '2' | 'After':
+                                    decision = '>='
+                                case '0' | 'Abort':
+                                    self.selection()
+                                case _:
+                                    print(Error)
+                                    self.selection()
+
+
+                            script = str(('''select
+                                        *
+                                    from
+	                                    staff
+                                    where
+	                                    HireDate {} '{}-{}-{} 00:00:00'
+                                    order by
+	                                    EmployeeID;''').format(decision, year, month, day))
+
+                            break
+
+                        except ValueError:
+                            print(Error)
+                            self.selection()
 
         try:
             file_name = (str(input('\n Type export file name.\n')) + '.csv')
             
-            Application.slowprint('\n Executing script......')
+            self.slowprint('\n Executing script......')
 
-            clients = pd.read_sql(execute_script, \
-                sqlite3.connect('./Database/EmployeeData.db'))
+            clients = pd.read_sql(script, self.con)
             
-            Application.slowprint('\n Exporting to {}........'.format(file_name))
+            self.slowprint('\n Exporting to {}........'.format(file_name))
 
             clients.to_csv(file_name, index=False)
 
-            Application.slowprint('\n Data exported Successfully into:')
+            self.slowprint('\n Data exported Successfully into:')
             print('\n ' + format(os.getcwd()))
 
         except:
             print(Error)
-            Application.selection()
+            self.selection()
 
-    def sqlOperations(option):
+    def sqlOperations(self, option):
 
         table_var = ['First Name', 'Last Name', 'Title or Position', \
                     'Birth Date (Format: 1995-10-15)', 'Hire Date (Format: 2010-10-01)', \
                     'Monthly Salary', 'Bonus']
 
         match option:
-            case 'case 11':
-                try:
-                    
-                    print('\n Type Year (Format: 2022). \n')
-                    year = int(input())
-                    print('\n Type Month (Format: 01 - 12). \n')
-                    month = int(input())
-                    print('\n Type Day (Format: 01 - 31). \n')
-                    day = int(input())
 
-                    print('\n Do you want to export before or after?\
-                    \n 0 - Abort\
-                    \n 1 - Before\
-                    \n 2 - After \n')
-                    x = int(input())
-                    match 'Abort' if x == 0 else 'Before' \
-                        if x == 1 else 'After' if x == 2 else 'Error':
-                        case 'Before':
-                            ab = '<='
-                        case 'After':
-                            ab = '>='
-                        case 'Abort':
-                            pass
-                        case 'Error':
-                            pass
-                
-                except ValueError:
-                
-                    pass
-
-                finally:
-
-                    return str('''select
-                                    *
-                                from
-	                                staff
-                                where
-	                                HireDate {} '{}-{}-{} 00:00:00'
-                                order by
-	                                EmployeeID;''').format(ab, year, month, day)
-
-            case 'case 12':
+            case '12':
                 try:
 
                     tx = []
 
-                    con = sqlite3.connect('./Database/EmployeeData.db')
-                    query = con\
-                            .execute('select MAX(EmployeeID) from Staff;')
-
+                    query = self.con.execute('select MAX(EmployeeID) from Staff;')
                     df = pd.DataFrame(data= query.fetchone())[0][0]
-
                     tx.append(df + 1)
 
                     for i in range(0, 5):
@@ -248,37 +236,24 @@ class Application:
                         tx.append("'" + str(input()) + "'")
 
                     for i in range(5, 7):
+
                         print('\n\n Type: ' + table_var[i])
                         tx.append(int(input()))
                     
 
-                    update_query = ('''INSERT OR IGNORE INTO Staff 
+                    update_query = str(('''INSERT OR IGNORE INTO Staff 
                     Values({}, {}, {}, {}, {}, {}, {}, {})''')\
-                        .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7])
+                        .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7]))
 
                 except ValueError:
                     print(Error)
-                    Application.selection()
+                    self.selection()
 
-                finally:
-
-                    cur = con.cursor()
-                    cur.execute(update_query)
-                    con.commit()
-                    con.close()
-
-                    os.system('cls')
-
-                    Application.selection()
-
-            case 'case 13':
+            case '13':
                 try:
 
                     tx = []
-
-                    con = sqlite3.connect('./Database/EmployeeData.db')
-                    query = con\
-                            .execute('select MAX(EmployeeID) from Staff;')
+                    query = self.con.execute('select MAX(EmployeeID) from Staff;')
 
                     df = pd.DataFrame(data= query.fetchone())[0][0]
 
@@ -287,45 +262,35 @@ class Application:
                     tx.append(names.get_first_name())
                     tx.append(names.get_last_name())
 
+                    tx.append(random.choice(open('./Database/tittle_list.txt').read().splitlines()))
+
                     d1 = datetime.strptime('1/1/1965 1:30 PM', '%m/%d/%Y %I:%M %p')
                     d2 = datetime.strptime('1/1/2000 0:50 AM', '%m/%d/%Y %I:%M %p')
-                    tx.append(Application.random_date(d1, d2).strftime('%Y-%m-%d'))
+                    tx.append(datetime.strftime(self.random_date(d1, d2), '%Y-%m-%d'))
 
                     d1 = datetime.strptime('1/1/2005 1:30 PM', '%m/%d/%Y %I:%M %p')
                     d2 = datetime.strptime('1/1/2021 4:50 AM', '%m/%d/%Y %I:%M %p')
-                    tx.append(Application.random_date(d1, d2).strftime('%Y-%m-%d'))
-
-                    tx.append(randint(3000, 11250))
-                    tx.append(randint(600, 2125))
+                    tx.append(datetime.strftime(self.random_date(d1, d2), '%Y-%m-%d'))
                     
-                    update_query = ('''INSERT OR IGNORE INTO Staff 
+                    #tx.append(self.random_date(d1, d2).strftime('%Y-%m-%d'))
+
+                    tx.append(random.randint(3000, 11250))
+                    tx.append(random.randint(600, 2125))
+                    
+                    update_query = str(('''INSERT OR IGNORE INTO Staff 
                     Values({}, {}, {}, {}, {}, {}, {}, {})''')\
-                        .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7])
+                        .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7]))
 
                 except ValueError:
                     print(Error)
-                    Application.selection()
+                    self.selection()
 
-                finally:
-
-                    cur = con.cursor()
-                    cur.execute(update_query)
-                    con.commit()
-                    con.close()
-
-                    os.system('cls')
-
-                    Application.selection()
-
-            case 'case 14':
+            case '14':
                 try:
 
                     tx = []
-
-                    con = sqlite3.connect('./Database/EmployeeData.db')
-
-                    print('\n Please type the EmployeeID.\n')
-                    tx.append(int(input()))
+                    
+                    tx.append(int(input('\n Please type the EmployeeID.\n')))
 
                     script = ('''select employeeid,
                                         firstname,
@@ -338,21 +303,41 @@ class Application:
                                 from Staff
                                 where EmployeeID = {};''').format(tx[0])
 
-                    query = con.execute(script)
+                    query = self.con.execute(script)
 
                     df = pd.DataFrame(data= query.fetchall(), \
-                        columns= [column[0] for column in con.execute(query).description])
+                        columns= [column[0] for column in query.description])
                     
                     df.index = df.index + 1
 
                     print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
 
-                    dx = con.execute(query).fetchone()
+                    while True:
 
-                    for i in range(1, len(dx)):
-                        tx.append(dx[i])
+                        x = input('\n Do you want to abort?\
+                            \n Yes - y\
+                            \n No  - n\n')
 
+                        match x:
+                            case 'Yes' | 'yes' | 'Y' | 'y':
+                                break
 
+                            case 'No' | 'no' | 'N' | 'n':
+                                self.selection()
+
+                            case _:
+                                print('\n Type again.')
+                                continue
+
+                    for i in range(0, 5):
+
+                        print('\n\n Type: ' + table_var[i])
+                        tx.append("'" + str(input()) + "'")
+
+                    for i in range(5, 7):
+
+                        print('\n\n Type: ' + table_var[i])
+                        tx.append(int(input()))
                     
                     update_query = ('''UPDATE Staff
                     
@@ -361,54 +346,29 @@ class Application:
 
                 except ValueError:
                     print(Error)
-                    Application.selection()
+                    self.selection()
+        
+            case '15':
 
-                finally:
+                idx = (int(input('\n Please type the EmployeeID.\n')))
 
-                    cur = con.cursor()
-                    cur.execute(update_query)
-                    con.commit()
-                    con.close()
+                update_query = str(('DELETE FROM Staff WHERE EmployeeID={};').format(idx))
 
-                    os.system('cls')
+            case _:
+                print('Error')
+                self.selection()
 
-                    Application.selection()
+
+        cur = self.con.cursor()
+        cur.execute(update_query)
+        self.con.commit()
+
+        self.slowprint('\n Executing ' + self.start[int(option) + 1])
+
+        self.selection()
 
     def random_date(start, end):
         delta = end - start
         int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
-        random_second = randrange(int_delta)
+        random_second = random.randrange(int_delta)
         return start + timedelta(seconds=random_second)
-
-            # params = {
-            #     'option': ab,
-            #     'date': ("'" + str(year) + '-' + str(month) + '-' + str(day) + "'")
-            # }
-            
-            # from jinja2.utils import markupsafe
-            # os.system('python markupsafe.Markup()')
-            # os.system('python ')
-            # from jinjasql import JinjaSql
-
-            # j = JinjaSql(param_style='pyformat')
-
-            # query, bind_params = j.prepare_query(export_query_template, params)
-
-            # script = str(query % bind_params)
-
-class SqlStatements:
-
-    def __init__(self, script):
-        self.script = script
-
-    def execute(self):
-
-        try:
-            con = sqlite3.connect('./Database/EmployeeData.db')
-            cur = con.cursor()
-            result = cur.execute(self.script).fetchall()        
-        except sqlite3.Error as error:
-            Application.slowprint('Error occured ' + str(error))
-        finally:
-            con.close()
-        return result
