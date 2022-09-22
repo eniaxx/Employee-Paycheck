@@ -1,7 +1,6 @@
 from msilib.schema import Error
 from tabulate import tabulate
-from datetime import datetime
-import sqlite3, sys, os, time, names, re, random, pandas as pd
+import sqlite3, sys, os, time, names, re, random, datetime, pandas as pd
 
 class Application:
 
@@ -70,6 +69,7 @@ class Application:
                 match key:
 
                     case 'm' | 'M':
+                        os.system('cls')
                         for i in range(0, len(self.start)): print(self.start[i], end= '')
 
                     case 'c' | 'C':
@@ -242,8 +242,10 @@ class Application:
                     
 
                     update_query = str(('''INSERT OR IGNORE INTO Staff 
-                    Values({}, {}, {}, {}, {}, {}, {}, {})''')\
+                    Values ({}, '{}', '{}', '{}', '{}', '{}', {}, {})''')\
                         .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7]))
+
+                    print('\n' + update_query)
 
                 except ValueError:
                     print(Error)
@@ -262,24 +264,34 @@ class Application:
                     tx.append(names.get_first_name())
                     tx.append(names.get_last_name())
 
-                    tx.append(random.choice(open('./Database/tittle_list.txt').read().splitlines()))
+                    tx.append(str(random.choice(open('./Database/tittle_list.txt').read().splitlines())))
 
-                    d1 = datetime.strptime('1/1/1965 1:30 PM', '%m/%d/%Y %I:%M %p')
-                    d2 = datetime.strptime('1/1/2000 0:50 AM', '%m/%d/%Y %I:%M %p')
-                    tx.append(datetime.strftime(self.random_date(d1, d2), '%Y-%m-%d'))
+                    start_dt = datetime.date(1965, 1, 1)
+                    end_dt = datetime.date(2000, 1, 1)
+                    time_between_dates = end_dt - start_dt
+                    days_between_dates = time_between_dates.days
+                    random_number_of_days = random.randrange(days_between_dates)
+                    random_date = start_dt + datetime.timedelta(days=random_number_of_days)
 
-                    d1 = datetime.strptime('1/1/2005 1:30 PM', '%m/%d/%Y %I:%M %p')
-                    d2 = datetime.strptime('1/1/2021 4:50 AM', '%m/%d/%Y %I:%M %p')
-                    tx.append(datetime.strftime(self.random_date(d1, d2), '%Y-%m-%d'))
-                    
-                    #tx.append(self.random_date(d1, d2).strftime('%Y-%m-%d'))
+                    tx.append(random_date)
+
+                    start_dt = datetime.date(2005, 1, 1)
+                    end_dt = datetime.date(2022, 1, 1)
+                    time_between_dates = end_dt - start_dt
+                    days_between_dates = time_between_dates.days
+                    random_number_of_days = random.randrange(days_between_dates)
+                    random_date = start_dt + datetime.timedelta(days=random_number_of_days)
+
+                    tx.append(random_date)
 
                     tx.append(random.randint(3000, 11250))
                     tx.append(random.randint(600, 2125))
                     
                     update_query = str(('''INSERT OR IGNORE INTO Staff 
-                    Values({}, {}, {}, {}, {}, {}, {}, {})''')\
+                    Values ({}, '{}', '{}', '{}', '{}', '{}', {}, {})''')\
                         .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7]))
+                    
+                    print('\n' + update_query)
 
                 except ValueError:
                     print(Error)
@@ -314,7 +326,7 @@ class Application:
 
                     while True:
 
-                        x = input('\n Do you want to abort?\
+                        x = input('\n Do you want to continue?\
                             \n Yes - y\
                             \n No  - n\n')
 
@@ -339,10 +351,13 @@ class Application:
                         print('\n\n Type: ' + table_var[i])
                         tx.append(int(input()))
                     
-                    update_query = ('''UPDATE Staff
-                    
-                    Values({}, {}, {}, {}, {}, {}, {}, {})''')\
-                        .format(tx[0], tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7])
+                    update_query = ('''UPDATE Staff \
+                        SET (FirstName, LastName, Title, BirthDate, HireDate, Salary, Bonus) = \
+                            ({}, {}, {}, {}, {}, {}, {}) \
+                        WHERE EmployeeID = {};''')\
+                        .format(tx[1], tx[2], tx[3], tx[4], tx[5], tx[6], tx[7], tx[0])
+
+                    print('\n' + update_query)
 
                 except ValueError:
                     print(Error)
@@ -353,6 +368,8 @@ class Application:
                 idx = (int(input('\n Please type the EmployeeID.\n')))
 
                 update_query = str(('DELETE FROM Staff WHERE EmployeeID={};').format(idx))
+
+                print('\n' + update_query)
 
             case _:
                 print('Error')
@@ -366,9 +383,3 @@ class Application:
         self.slowprint('\n Executing ' + self.start[int(option) + 1])
 
         self.selection()
-
-    def random_date(start, end):
-        delta = end - start
-        int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
-        random_second = random.randrange(int_delta)
-        return start + timedelta(seconds=random_second)
