@@ -14,5 +14,6 @@
     [12] Create Employee                
     [13] Create Employee With Random Data        
     [14] Modify Employee Data
+    [15] Delete Employee Data
 -------------------------------------------------------------------
     [0] Exit / End Program

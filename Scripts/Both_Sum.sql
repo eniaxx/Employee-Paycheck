@@ -1,1 +1,0 @@
-select round(sum(Bonus) + sum(Salary),2) from staff;
